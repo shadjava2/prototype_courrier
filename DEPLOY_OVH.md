@@ -90,12 +90,19 @@ docker-compose ps
 curl http://localhost:3388
 ```
 
-### 6. Configuration du pare-feu (si nécessaire)
-Assurez-vous que le port 3388 est ouvert dans le pare-feu OVH :
+### 6. Ouvrir le port 3388 dans le pare-feu
+**IMPORTANT :** Vous devez ouvrir le port 3388 pour que l'application soit accessible :
+
 ```bash
-# Exemple avec ufw (si installé)
+# Avec ufw (pare-feu Ubuntu)
 sudo ufw allow 3388/tcp
+sudo ufw reload
+
+# Vérifier que le port est ouvert
+sudo ufw status | grep 3388
 ```
+
+**Note :** Si vous utilisez un autre pare-feu ou le pare-feu OVH, configurez-le pour autoriser le port 3388.
 
 ### 7. Configuration du reverse proxy (optionnel - si vous utilisez Nginx/Apache)
 Si vous souhaitez utiliser un domaine avec Nginx, ajoutez cette configuration :

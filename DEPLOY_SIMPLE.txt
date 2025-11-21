@@ -1,0 +1,34 @@
+==========================================
+SCRIPT SIMPLE DE DÉPLOIEMENT OVH
+==========================================
+
+1. Ouvrir le port 3388 (si ufw est installé) :
+------------------------------------------------------------
+sudo ufw allow 3388/tcp
+sudo ufw reload
+------------------------------------------------------------
+
+2. Script de déploiement :
+------------------------------------------------------------
+cd /opt/prototype_courrier
+
+# Mettre à jour le code
+git pull origin main
+
+# Reconstruire et lancer
+docker compose up -d --build
+
+# Vérifier que ça tourne
+docker compose ps
+
+# Voir les logs
+docker compose logs -f courrier-proto
+------------------------------------------------------------
+
+OU utiliser le script automatique :
+------------------------------------------------------------
+cd /opt/prototype_courrier
+chmod +x deploy.sh
+./deploy.sh
+------------------------------------------------------------
+
