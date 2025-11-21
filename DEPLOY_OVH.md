@@ -194,6 +194,75 @@ services:
       - .env
 ```
 
+## Dépannage
+
+### Le conteneur ne démarre pas ou l'application n'est pas accessible
+
+1. **Vérifier les logs du conteneur :**
+```bash
+docker-compose logs -f
+# ou
+docker logs courrier-proto
+```
+
+2. **Vérifier que le conteneur est en cours d'exécution :**
+```bash
+docker ps -a
+```
+
+3. **Vérifier que le build a réussi :**
+```bash
+docker-compose build --no-cache
+docker-compose up -d
+```
+
+4. **Vérifier les ports :**
+```bash
+netstat -tuln | grep 3388
+# ou
+ss -tuln | grep 3388
+```
+
+5. **Redémarrer complètement :**
+```bash
+docker-compose down
+docker-compose up -d --build
+```
+
+6. **Vérifier les erreurs de build :**
+```bash
+docker-compose build 2>&1 | tee build.log
+```
+
+7. **Entrer dans le conteneur pour diagnostiquer :**
+```bash
+docker exec -it courrier-proto sh
+# Dans le conteneur :
+ls -la
+cat package.json
+npm start
+```
+
+8. **Vérifier que le dossier .next existe :**
+```bash
+docker exec -it courrier-proto ls -la .next
+```
+
+### Erreurs courantes
+
+- **"Cannot find module"** : Le build n'a pas réussi, vérifiez les logs de build
+- **"Port already in use"** : Un autre service utilise le port 3388
+- **"Permission denied"** : Problème de permissions Docker
+- **"Connection refused"** : Le conteneur n'écoute pas sur le bon port ou n'est pas démarré
+
+### Script de diagnostic
+
+Un script de diagnostic est disponible dans le dépôt :
+```bash
+chmod +x troubleshoot.sh
+./troubleshoot.sh
+```
+
 ## Accès à l'application
 Une fois déployé, l'application sera accessible sur :
 - `http://votre-ip-serveur:3388`
