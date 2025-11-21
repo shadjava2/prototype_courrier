@@ -1,0 +1,10 @@
+version: "3.9"
+
+services:
+  courrier-proto:
+    build: .
+    container_name: courrier-proto
+    ports:
+      - "3015:3000" # hôte:conteneur
+    restart: unless-stopped
+
