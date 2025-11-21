@@ -2,7 +2,6 @@
 
 ## Prérequis
 - Serveur OVH avec accès SSH
-- Docker et Docker Compose installés
 - Git installé
 
 ## Étapes de déploiement
@@ -12,32 +11,93 @@
 ssh votre-utilisateur@votre-serveur-ovh.com
 ```
 
-### 2. Cloner le dépôt GitHub
+### 2. Installation de Docker et Docker Compose
+
+#### Installation de Docker
+```bash
+# Mettre à jour les paquets
+sudo apt update
+
+# Installer les dépendances
+sudo apt install -y apt-transport-https ca-certificates curl software-properties-common
+
+# Ajouter la clé GPG officielle de Docker
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+
+# Ajouter le dépôt Docker
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+# Installer Docker
+sudo apt update
+sudo apt install -y docker-ce docker-ce-cli containerd.io
+
+# Démarrer Docker
+sudo systemctl start docker
+sudo systemctl enable docker
+
+# Ajouter l'utilisateur au groupe docker (pour éviter d'utiliser sudo)
+sudo usermod -aG docker $USER
+# Note: Vous devrez vous déconnecter et reconnecter pour que cela prenne effet
+```
+
+#### Installation de Docker Compose
+```bash
+# Installer Docker Compose v2 (recommandé)
+sudo apt install -y docker-compose-plugin
+
+# Ou installer Docker Compose v1 (ancienne version)
+sudo apt install -y docker-compose
+
+# Vérifier l'installation
+docker --version
+docker compose version
+# ou
+docker-compose --version
+```
+
+**Note:** Si vous utilisez Docker Compose v2 (plugin), utilisez `docker compose` au lieu de `docker-compose`.
+
+### 3. Cloner le dépôt GitHub
 ```bash
 cd /chemin/vers/votre/dossier
 git clone https://github.com/shadjava2/prototype_courrier.git
 cd prototype_courrier
 ```
 
-### 3. Construire et lancer avec Docker Compose
+### 4. Construire et lancer avec Docker Compose
+
+**Si vous utilisez Docker Compose v2 (plugin):**
+```bash
+docker compose up -d --build
+```
+
+**Si vous utilisez Docker Compose v1:**
 ```bash
 docker-compose up -d --build
 ```
 
-### 4. Vérifier que l'application fonctionne
+### 5. Vérifier que l'application fonctionne
+
+**Avec Docker Compose v2:**
+```bash
+docker compose ps
+curl http://localhost:3388
+```
+
+**Avec Docker Compose v1:**
 ```bash
 docker-compose ps
 curl http://localhost:3388
 ```
 
-### 5. Configuration du pare-feu (si nécessaire)
+### 6. Configuration du pare-feu (si nécessaire)
 Assurez-vous que le port 3388 est ouvert dans le pare-feu OVH :
 ```bash
 # Exemple avec ufw (si installé)
 sudo ufw allow 3388/tcp
 ```
 
-### 6. Configuration du reverse proxy (optionnel - si vous utilisez Nginx/Apache)
+### 7. Configuration du reverse proxy (optionnel - si vous utilisez Nginx/Apache)
 Si vous souhaitez utiliser un domaine avec Nginx, ajoutez cette configuration :
 
 #### Nginx
@@ -57,10 +117,20 @@ server {
 }
 ```
 
-### 7. Mise à jour de l'application
+### 8. Mise à jour de l'application
 Pour mettre à jour l'application après des modifications sur GitHub :
+
+**Avec Docker Compose v2:**
 ```bash
-cd /chemin/vers/prototype_courrier
+cd /opt/prototype_courrier
+git pull origin main
+docker compose down
+docker compose up -d --build
+```
+
+**Avec Docker Compose v1:**
+```bash
+cd /opt/prototype_courrier
 git pull origin main
 docker-compose down
 docker-compose up -d --build
@@ -69,16 +139,37 @@ docker-compose up -d --build
 ## Commandes utiles
 
 ### Voir les logs
+
+**Avec Docker Compose v2:**
+```bash
+docker compose logs -f
+```
+
+**Avec Docker Compose v1:**
 ```bash
 docker-compose logs -f
 ```
 
 ### Arrêter l'application
+
+**Avec Docker Compose v2:**
+```bash
+docker compose down
+```
+
+**Avec Docker Compose v1:**
 ```bash
 docker-compose down
 ```
 
 ### Redémarrer l'application
+
+**Avec Docker Compose v2:**
+```bash
+docker compose restart
+```
+
+**Avec Docker Compose v1:**
 ```bash
 docker-compose restart
 ```
