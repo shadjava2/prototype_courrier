@@ -7,6 +7,8 @@ const nextConfig: NextConfig = {
     maxInactiveAge: 25 * 1000,
     pagesBufferLength: 2,
   },
+  // Désactiver la génération statique pour les pages dynamiques
+  output: 'standalone',
 };
 
 export default nextConfig;

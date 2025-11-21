@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Layout from "@/components/Layout";
 import { getCourrierById } from "@/lib/data";
 import { Courrier } from "@/lib/types";
 
-export default function VerifierPage() {
+function VerifierContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [courrier, setCourrier] = useState<Courrier | null>(null);
@@ -152,5 +152,22 @@ export default function VerifierPage() {
         </div>
       </div>
     </Layout>
+  );
+}
+
+export default function VerifierPage() {
+  return (
+    <Suspense fallback={
+      <Layout>
+        <div className="flex items-center justify-center h-64">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#0033A0] mx-auto"></div>
+            <p className="mt-4 text-slate-600">Chargement...</p>
+          </div>
+        </div>
+      </Layout>
+    }>
+      <VerifierContent />
+    </Suspense>
   );
 }
