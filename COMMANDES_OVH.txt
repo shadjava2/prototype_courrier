@@ -1,0 +1,61 @@
+==========================================
+BLOC DE CODE POUR DÉPLOIEMENT SUR OVH
+==========================================
+
+Copiez et collez ce bloc complet dans votre terminal SSH sur OVH :
+
+------------------------------------------------------------
+
+cd /opt && \
+git clone https://github.com/shadjava2/prototype_courrier.git && \
+cd prototype_courrier && \
+chmod +x deploy-ovh.sh && \
+./deploy-ovh.sh
+
+------------------------------------------------------------
+
+OU si le dossier existe déjà :
+
+------------------------------------------------------------
+
+cd /opt/prototype_courrier && \
+git pull origin main && \
+chmod +x deploy-ovh.sh && \
+./deploy-ovh.sh
+
+------------------------------------------------------------
+
+OU commandes manuelles étape par étape :
+
+------------------------------------------------------------
+
+# 1. Aller dans /opt
+cd /opt
+
+# 2. Cloner ou mettre à jour
+if [ -d "prototype_courrier" ]; then
+    cd prototype_courrier
+    git pull origin main
+else
+    git clone https://github.com/shadjava2/prototype_courrier.git
+    cd prototype_courrier
+fi
+
+# 3. Arrêter l'ancien conteneur si existe
+docker-compose down
+
+# 4. Reconstruire et démarrer
+docker-compose build --no-cache
+docker-compose up -d
+
+# 5. Vérifier
+docker-compose ps
+docker-compose logs --tail=50
+
+# 6. Tester
+curl http://localhost:3388
+
+------------------------------------------------------------
+
+L'application sera accessible sur le port 3388 après le déploiement.
+
