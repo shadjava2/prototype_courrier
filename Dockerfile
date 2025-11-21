@@ -12,8 +12,8 @@ WORKDIR /app
 ENV NODE_ENV=production
 COPY --from=builder /app ./
 
-# Next.js par défaut sur 3000 dans le conteneur
-EXPOSE 3000
+# Next.js sur le port 3388 dans le conteneur
+EXPOSE 3388
 
 CMD ["npm", "start"]
 
